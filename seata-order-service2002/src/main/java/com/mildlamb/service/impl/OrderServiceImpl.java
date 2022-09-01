@@ -5,6 +5,7 @@ import com.mildlamb.domain.Order;
 import com.mildlamb.service.AccountService;
 import com.mildlamb.service.OrderService;
 import com.mildlamb.service.StorageService;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,14 +16,15 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private OrderDao orderDao;
-    @Autowired(required = false)
+    @Autowired
     private AccountService accountService;
-    @Autowired(required = false)
+    @Autowired
     private StorageService storageService;
 
 
 
     @Override
+    @GlobalTransactional(name = "mildlamb-create-order",rollbackFor = Exception.class)  // 开启全局事务
     public void create(Order order) {
         // 新建订单
         log.info(" ---------->> 开始新建订单");
